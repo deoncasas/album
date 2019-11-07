@@ -1,4 +1,6 @@
-import { CHANGE_SEARCH_VIDEO_FIELD } from '../../constants.js'
+import { 
+  CHANGE_SEARCH_VIDEO_FIELD,
+} from '../constants.js'
 
 export const setSearchVideo = (text) => {
   console.log(text);

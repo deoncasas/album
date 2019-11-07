@@ -1,70 +1,56 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './App.scss';
-import { setSearchVideo } from './actions/searchVideo/searchVideo';
+import { setSearchVideo } from './actions/searchVideo';
+import { requestVideo } from './actions/requestVideo';
 
 const mapStateToProps = state => {
   return {
-    searchVideoField: state.searchVideoField
+    searchVideoField: state.searchVideos.searchVideoField,
+    videos: state.requestVideo.videos,
+    isPending: state.requestVideo.isPending,
+    error: state.requestVideo.error
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return { 
-    onSearchChange: (event) => dispatch(setSearchVideo(event.target.value))
+    onSearchChange: (event) => dispatch(setSearchVideo(event.target.value)),
+    onRequestVideos: () => dispatch(requestVideo())
   }
 }
 
 class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      videos: [],
-    }
-  }
 
   componentDidMount() {
-    this.setState({ videos: [{
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR8wL-RvGE0G3B2W-dMd9ZZcgW8BR7nzrIgpXiWYxpio_RFvvCb',
-      id: 0,
-      name: 'image one',
-    },{
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR8wL-RvGE0G3B2W-dMd9ZZcgW8BR7nzrIgpXiWYxpio_RFvvCb',
-      id: 1,
-      name: 'image two',
-    },{
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR8wL-RvGE0G3B2W-dMd9ZZcgW8BR7nzrIgpXiWYxpio_RFvvCb',
-      id: 2,
-      name: 'image three',
-    }]})
+    this.props.onRequestVideos();
   }
 
   
 
   render() {
     const { 
-      videos 
-    } = this.state;
-    const { 
       onSearchChange, 
-      searchVideoField 
+      searchVideoField,
+      videos,
+      isPending 
     } = this.props;
 
     const filteredVideos = videos.filter(video => {
       return video.name.toLowerCase().includes(searchVideoField.toLowerCase());
     });
 
-    return (
+    return isPending ? <div>Loading...</div> :
       <div className="App">
         <input type="text" onChange={onSearchChange} />
         {
           filteredVideos.map(function(item, i){
-            return <img key={i} src={item.image} alt={item.image} />
+            return <img key={i} src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR8wL-RvGE0G3B2W-dMd9ZZcgW8BR7nzrIgpXiWYxpio_RFvvCb" alt="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR8wL-RvGE0G3B2W-dMd9ZZcgW8BR7nzrIgpXiWYxpio_RFvvCb" />
           })
         }
       </div>
-    )
   }
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
